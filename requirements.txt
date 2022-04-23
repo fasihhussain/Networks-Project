@@ -1,0 +1,6 @@
+cplex>=22.1.0.0
+docplex>=2.23.222
+matplotlib>=3.5.1
+matplotlib-inline>=0.1.3
+networkx>=2.8
+numpy>=1.22.3
