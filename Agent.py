@@ -50,9 +50,9 @@ class Agent:
         self.history = {"B_t": [self.B_t], "B_consumed": []}
         # Flow(prey, predeator)
 
-    def calculate_biomass(self, flow_matrix):
-        B_consumed = sum(flow_matrix[:, self.index])
-        B_lost = sum(flow_matrix[self.index])
+    def calculate_biomass(self, flow_matrix, sum_func=sum):
+        B_consumed = sum_func(flow_matrix[self.preys, self.index])
+        B_lost = sum_func(flow_matrix[self.index, self.predeators])
 
         return np.exp(-self.mu) * self.B_t + ((1 - np.exp(-self.mu)) / self.mu) * (
             self.gammma * B_consumed + self.B_import - B_lost - self.B_export
@@ -66,7 +66,7 @@ class Agent:
     def show_history(self, keys=["B_t", "B_consumed"]):
         for key in keys:
             if key == "B_t":
-                print(self.history[key])
+                # print(self.history[key])
                 plt.plot(self.history[key])
                 plt.ylabel("Biomass")
                 plt.xlabel("Iteration")
