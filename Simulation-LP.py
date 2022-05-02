@@ -23,13 +23,13 @@ class Simulation:
                 config["B_import"],
                 config["B_export"],
                 config["B_refuge"],
-                self.get_predeators(i),
+                self.get_predators(i),
                 self.get_preys(i),
             )
             for i, config in enumerate(agent_configurations)
         ]
 
-    def get_predeators(self, agent):
+    def get_predators(self, agent):
         return list(self.foodweb.neighbors(agent))
 
     def get_preys(self, agent):
@@ -50,14 +50,14 @@ class Simulation:
         constraints = []
 
         # Variables
-        for prey, predeator in self.foodweb.edges():
-            flow_matrix[prey][predeator] = model.continuous_var(
-                name=f"({self.agents[prey].name}->{self.agents[predeator].name})"
+        for prey, predator in self.foodweb.edges():
+            flow_matrix[prey][predator] = model.continuous_var(
+                name=f"({self.agents[prey].name}->{self.agents[predator].name})"
             )
             constraints.append(
                 model.add_constraint(
-                    flow_matrix[prey][predeator] >= 0,
-                    ctname=f"({self.agents[prey].name}->{self.agents[predeator].name}) >= 0",
+                    flow_matrix[prey][predator] >= 0,
+                    ctname=f"({self.agents[prey].name}->{self.agents[predator].name}) >= 0",
                 )
             )
 
@@ -67,7 +67,7 @@ class Simulation:
         for i, agent in enumerate(self.agents):
             B_next = agent.calculate_biomass(flow_matrix, model.sum)
             B_consumed = model.sum(flow_matrix[agent.preys, i])
-            B_lost = model.sum(flow_matrix[i, agent.predeators])
+            B_lost = model.sum(flow_matrix[i, agent.predators])
 
             # change in biomass constraint by inertia
             # constraints.append(
@@ -135,8 +135,8 @@ class Simulation:
         model.solve()
         print(model.solve_details)
 
-        for prey, predeator in self.foodweb.edges():
-            flow_matrix[prey, predeator] = flow_matrix[prey, predeator].solution_value
+        for prey, predator in self.foodweb.edges():
+            flow_matrix[prey, predator] = flow_matrix[prey, predator].solution_value
 
         flow_matrix = flow_matrix.astype("float64")
 

@@ -19,7 +19,7 @@ class Agent:
         B_import,
         B_export,
         B_refuge,
-        predeators,
+        predators,
         preys,
     ):
         """Initialize the Agent
@@ -45,13 +45,13 @@ class Agent:
         self.B_import = B_import
         self.B_export = B_export
         self.B_refuge = B_refuge
-        self.predeators = predeators
+        self.predators = predators
         self.preys = preys
 
-        print(f"Name: {self.name} Predeators: {self.predeators} Preys: {self.preys}")
+        print(f"Name: {self.name} Predators: {self.predators} Preys: {self.preys}")
 
         self.history = {"B_t": [self.B_t], "B_consumed": []}
-        # Flow(prey, predeator)
+        # Flow(prey, predator)
 
     def calculate_biomass(self, flow_matrix):
         B_consumed = sum(flow_matrix[:, self.index])
@@ -82,7 +82,7 @@ class Agent:
         # plt.show()
 
     def __str__(self):
-        return f"Name: {self.name}\nPredeators: {self.predeators}\nPreys: {self.preys}"
+        return f"Name: {self.name}\nPredators: {self.predators}\nPreys: {self.preys}"
 
 
 class Simulation:
@@ -100,13 +100,13 @@ class Simulation:
                 config["B_import"],
                 config["B_export"],
                 config["B_refuge"],
-                self.get_predeators(i),
+                self.get_predators(i),
                 self.get_preys(i),
             )
             for i, config in enumerate(agent_configurations)
         ]
 
-    def get_predeators(self, agent):
+    def get_predators(self, agent):
         return list(self.foodweb.neighbors(agent))
 
     def get_preys(self, agent):

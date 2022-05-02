@@ -16,7 +16,7 @@ class Agent:
         B_import,
         B_export,
         B_refuge,
-        predeators,
+        predators,
         preys,
     ):
         """Initialize the Agent
@@ -42,17 +42,17 @@ class Agent:
         self.B_import = B_import
         self.B_export = B_export
         self.B_refuge = B_refuge
-        self.predeators = predeators
+        self.predators = predators
         self.preys = preys
 
-        print(f"Name: {self.name} Predeators: {self.predeators} Preys: {self.preys}")
+        print(f"Name: {self.name} Predators: {self.predators} Preys: {self.preys}")
 
         self.history = {"B_t": [self.B_t], "B_consumed": []}
-        # Flow(prey, predeator)
+        # Flow(prey, predator)
 
     def calculate_biomass(self, flow_matrix, sum_func=sum):
         B_consumed = sum_func(flow_matrix[self.preys, self.index])
-        B_lost = sum_func(flow_matrix[self.index, self.predeators])
+        B_lost = sum_func(flow_matrix[self.index, self.predators])
 
         return np.exp(-self.mu) * self.B_t + ((1 - np.exp(-self.mu)) / self.mu) * (
             self.gammma * B_consumed + self.B_import - B_lost - self.B_export
@@ -79,4 +79,4 @@ class Agent:
         # plt.show()
 
     def __str__(self):
-        return f"Name: {self.name}\nPredeators: {self.predeators}\nPreys: {self.preys}"
+        return f"Name: {self.name}\nPredators: {self.predators}\nPreys: {self.preys}"
