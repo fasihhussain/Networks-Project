@@ -9,6 +9,7 @@ agent_configurations = [
         "B_import": 700,
         "B_export": 0,
         "B_refuge": 0.250,
+        "color": "#00ff00",
     },
     {
         "name": "Zooplankton",
@@ -20,6 +21,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.2,
+        "color": "#ff0000",
     },
     {
         "name": "Anchovy",
@@ -31,6 +33,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.102,
+        "color": "#0000ff",
     },
     {
         "name": "Sardine",
@@ -42,6 +45,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.105,
+        "color": "#00ffff",
     },
     {
         "name": "Squid",
@@ -53,6 +57,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.001,
+        "color": "#ff00ff",
     },
     {
         "name": "Hake",
@@ -64,6 +69,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.002,
+        "color": "#ffff00",
     },
     {
         "name": "Birds",
@@ -75,6 +81,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.001,
+        "color": "#ffa2a2",
     },
     {
         "name": "Seals",
@@ -86,6 +93,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.001,
+        "color": "#a232a2",
     },
     {
         "name": "Whales",
@@ -97,6 +105,7 @@ agent_configurations = [
         "B_import": 0,
         "B_export": 0,
         "B_refuge": 0.001,
+        "color": "#7e00ff",
     },
 ]
 

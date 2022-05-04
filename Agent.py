@@ -18,6 +18,7 @@ class Agent:
         B_refuge,
         predators,
         preys,
+        color,
     ):
         """Initialize the Agent
 
@@ -44,6 +45,7 @@ class Agent:
         self.B_refuge = B_refuge
         self.predators = predators
         self.preys = preys
+        self.color = color
 
         print(f"Name: {self.name} Predators: {self.predators} Preys: {self.preys}")
 
@@ -61,17 +63,38 @@ class Agent:
     def update_biomass(self, flow_matrix):
         self.B_t = self.calculate_biomass(flow_matrix)
         self.history["B_t"].append(self.B_t)
-        self.history["B_consumed"].append(list(flow_matrix[:, self.index]))
+        self.history["B_consumed"].append(
+            list(100 * flow_matrix[:, self.index] / sum(flow_matrix[:, self.index]))
+        )
+        # assert (
+        #     sum(flow_matrix[:, self.index]) > 0 or self.name == "Phytoplankton"
+        # ), f"consumed biomass of {self.name} is equal to 0"
 
-    def show_history(self, keys=["B_t", "B_consumed"]):
-        for key in keys:
+    def show_history(self, simulation, keys):
+        for key, axis in keys.items():
             if key == "B_t":
-                # print(self.history[key])
-                plt.plot(self.history[key])
-                plt.ylabel("Biomass")
-                plt.xlabel("Iteration")
-                plt.title(self.name)
-                plt.show()
+                # Individual plot
+                axis[0].plot(self.history[key], color=self.color)
+                axis[0].set_title(self.name)
+
+                # Common plot
+                axis[1].plot(self.history[key], label=self.name, color=self.color)
+            elif key == "B_consumed":
+                history = np.array(self.history["B_consumed"])
+                current_level = np.zeros(history.shape[0])
+                years = range(1, history.shape[0] + 1)
+                axis.set_title(self.name)
+                # for i, agent in enumerate(simulation.agents):
+                for i in self.preys:
+                    agent = simulation.agents[i]
+                    axis.fill_between(
+                        years,
+                        current_level,
+                        current_level + history[:, i],
+                        color=agent.color,
+                        label=agent.name,
+                    )
+                    current_level += history[:, i]
         # plt.plot(self.history["B_t"])
         # plt.ylabel("Biomass")
         # plt.xlabel("Iteration")

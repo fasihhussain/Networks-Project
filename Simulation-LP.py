@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from docplex.mp.model import Model
 from docplex.mp.relaxer import Relaxer
 
@@ -25,6 +26,7 @@ class Simulation:
                 config["B_refuge"],
                 self.get_predators(i),
                 self.get_preys(i),
+                config["color"],
             )
             for i, config in enumerate(agent_configurations)
         ]
@@ -121,16 +123,69 @@ class Simulation:
             for agent in self.agents
         ]
 
-        model.maximize(model.sum(B_ratio))
+        # model.maximize(model.sum(B_ratio))
+
+        # errors = []
+        # for i, agent in enumerate(self.agents):
+        #     prey_biomass = np.array([self.agents[prey].B_t for prey in agent.preys])
+        #     total_prey_biomass = sum([self.agents[prey].B_t for prey in agent.preys])
+
+        #     expected_consumed_ratio = prey_biomass / total_prey_biomass
+
+        #     actual_consumed = flow_matrix[agent.preys, i]
+        #     actual_consumed_ratio = actual_consumed / model.sum(actual_consumed)
+
+        #     agent_errors = actual_consumed_ratio - expected_consumed_ratio
+        #     errors.append(model.sumsq(agent_errors))
+
+        errors = []
+        for i, agent in enumerate(self.agents):
+            if not len(agent.preys):
+                continue
+            prey_biomass = np.array([self.agents[prey].B_t for prey in agent.preys])
+            total_prey_biomass = sum([self.agents[prey].B_t for prey in agent.preys])
+
+            expected_consumed_ratio = prey_biomass / total_prey_biomass
+
+            actual_consumed = flow_matrix[agent.preys, i]
+            total_actual_consumed = model.sum(actual_consumed)
+            # actual_consumed_ratio = actual_consumed / model.sum(actual_consumed)
+
+            agent_errors = np.array(
+                [
+                    a * total_actual_consumed - b
+                    for a, b in zip(expected_consumed_ratio, actual_consumed)
+                ]
+            )
+
+            # agent_errors = (
+            #     expected_consumed_ratio * total_actual_consumed - actual_consumed
+            # )
+
+            # agent_errors = (
+            #     actual_consumed - expected_consumed_ratio
+            # ) / total_prey_biomass
+
+            errors.append(model.sumsq(agent_errors))
+
+        model.minimize(model.sum(errors))
+
+        # specie i
+        # 3 preys: sum of biomass is 100 of the preys
+        # prey 1: 50
+        # prey 2: 30
+        # prey 3: 20
+
+        # optimization function minimize
 
         # Minimize the ratio between B_t and B_(t+1)
         # model.minimize(model.sum_squares(B_ratio))
 
-        # relaxer = Relaxer()
-        # relaxer.relax(model)
+        relaxer = Relaxer()
+        relaxer.relax(model)
 
-        # print(f"Number of Relaxations = {relaxer.number_of_relaxations}")
-        # relaxer.print_information()
+        print(f"Number of Relaxations = {relaxer.number_of_relaxations}")
+        relaxer.print_information()
 
         model.solve()
         print(model.solve_details)
@@ -153,8 +208,84 @@ class Simulation:
             self.update_state()
 
         if show_history:
-            for agent in self.agents:
-                agent.show_history(["B_t"])
+            individual_plots = {
+                "B_t": plt.subplots(3, 3),
+                "B_consumed": plt.subplots(3, 3),
+            }
+            B_t_common = plt.subplots()
+
+            for i, agent in enumerate(self.agents):
+                agent.show_history(
+                    self,
+                    {
+                        "B_t": [
+                            individual_plots["B_t"][1][i % 3, i // 3],
+                            B_t_common[1],
+                        ],
+                        "B_consumed": individual_plots["B_consumed"][1][i % 3, i // 3],
+                    },
+                )
+
+            # For B_t plots
+            individual_plots["B_t"][0].suptitle("Biomass Over Time")
+            for ax in individual_plots["B_t"][1][-1]:
+                ax.set(xlabel="Iteration (years)")
+            for ax in individual_plots["B_t"][1][:, 0]:
+                ax.set(ylabel="Biomass (t/km^2)")
+
+            B_t_common[1].set(
+                title="Biomass Over Time (All Species)",
+                xlabel="Iteration (years)",
+                ylabel="Biomass (t/km^2)",
+            )
+            B_t_common[1].legend(loc="upper right")
+
+            # For B_consumed plots
+            individual_plots["B_t"][0].suptitle("Composition of Diet")
+            for ax in individual_plots["B_consumed"][1][-1]:
+                ax.set(xlabel="Iteration (years)")
+            for ax in individual_plots["B_consumed"][1][:, 0]:
+                ax.set(ylabel="Percentage")
+
+            handles = [
+                mpatches.Patch(label=agent.name, color=agent.color)
+                for agent in simulation.agents
+            ]
+            individual_plots["B_consumed"][0].legend(handles=handles, loc="upper right")
+            # lines_labels = [
+            #     ax.get_legend_handles_labels()
+            #     for ax in individual_plots["B_consumed"][1].flat
+            # ]
+            # lines, labels = [sum(x, []) for x in zip(*lines_labels)]
+            # test = ["red"] * len(labels)
+            # print(f"LINES: {lines}")
+            # print(f"LABELS: {labels}")
+            # # handles, labels = individual_plots["B_consumed"][
+            # #     0
+            # # ].get_legend_handles_labels()
+            # individual_plots["B_consumed"][0].legend(test, labels, loc="upper right")
+
+            plt.show()
+            # fig, axs = plt.subplots(3, 3)
+            # fig_common, ax_common = plt.subplots()
+            # # ax_common.set_title("All Species")
+            # for i, agent in enumerate(self.agents):
+            #     agent.show_history({"B_t": [axs[i % 3, i // 3], ax_common]})
+
+            # for ax in axs[-1]:
+            #     ax.set(xlabel="Iteration (years)")
+            # for ax in axs[:, 0]:
+            #     ax.set(ylabel="Biomass (t/km^2)")
+
+            # ax_common.set(
+            #     title="All Species",
+            #     xlabel="Iteration (years)",
+            #     ylabel="Biomass (t/km^2)",
+            # )
+            # ax_common.legend(loc="upper right")
+            # # ax.set(xlabel="Iteration (years)", ylabel="Biomass (t/km^2)")
+            # # for ax in fig.get_axes():
+            # #     ax.label_outer()
 
 
 if __name__ == "__main__":
