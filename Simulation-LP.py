@@ -58,7 +58,7 @@ class Simulation:
             )
             constraints.append(
                 model.add_constraint(
-                    flow_matrix[prey][predator] >= 0,
+                    flow_matrix[prey][predator] >= 0.001,
                     ctname=f"({self.agents[prey].name}->{self.agents[predator].name}) >= 0",
                 )
             )
@@ -111,7 +111,7 @@ class Simulation:
         # model.maximize(model.sum(flow_matrix.flatten()))
 
         # Minimize the ratio between B_t and B_(t+1)
-        errors = [
+        errors1 = [
             (agent.calculate_biomass(flow_matrix, model.sum) - agent.B_t) / agent.B_t
             for agent in self.agents
         ]
@@ -168,7 +168,10 @@ class Simulation:
 
             errors.append(model.sumsq(agent_errors))
 
-        model.minimize(model.sum(errors))
+        # model.minimize(model.sum(errors))
+        model.minimize(model.sum(errors) - 0.1 * model.sum(B_ratio))
+
+        # model.maximize(model.sum([model.sum(errors), model.sum(B_ratio)]))
 
         # specie i
         # 3 preys: sum of biomass is 100 of the preys
