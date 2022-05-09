@@ -1,4 +1,3 @@
-import json
 from random import random
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -10,6 +9,7 @@ import numpy as np
 
 file_names = ["Chesapeake", "ChesLow", "ChesMid", "ChesUp", "CrystalC", "CrystalD",
                 "Maspalomas", "Michigan", "Mondego", "Narragan", "Rhode", "StMarks"]
+
 motif_n = motifs.keys()
 
 motif_freq = {"Chesapeake": {'S1': 179, 'S2': 152, 'S3': 0, 'S4': 908, 'S5': 210, 'D1': 12, 'D2': 3, 'D3': 21, 'D4': 37, 'D5': 7, 'D6': 0, 'D7': 6, 'D8': 0},
@@ -93,39 +93,3 @@ plt.xlabel("Food Web Networks")
 plt.ylabel("Frequency of Each Motif")
 plt.title("Motif Frequency of Each Dataset")
 plt.show()
-
-
-# fname = "Everglades"
-
-# fp = open(f"./data/{fname}.json")
-# data = json.load(fp)
-
-# G = nx.read_pajek(f"./paj/{fname}.paj", )
-# G = nx.DiGraph(G)
-
-
-# print(na.CC(G))
-# na.degreeDistribution(G)
-# print(na.APL(G))
-# print(motifCounter(G))
-
-
-# deg_seq = [(G.in_degree(n),G.out_degree(n)) for n in G.nodes()]
-# random_graph.sample_directed_graph()
-# edges = random_graph.sample_directed_graph(degree_sequence= deg_seq)
-# rand_graph = nx.DiGraph()
-# rand_graph.add_nodes_from(G.nodes())
-# rand_graph.add_edges_from(edges)
-
-# G = nx.DiGraph()
-# G.name = fname
-# for i, node in enumerate(data["nodes"]):
-#     G.add_node(i, name=node["name"], isPrey = node["group"] == "Prey")
-
-
-# for link in data["links"]:
-#     G.add_edge(link["source"], link["target"])
-
-
-
-
