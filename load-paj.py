@@ -8,3 +8,5 @@ G = nx.DiGraph(G)
 
 nx.draw(G)
 plt.show()
+
+print(motifCounter(G))
