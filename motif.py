@@ -2,23 +2,6 @@ import itertools
 import numpy as np
 import networkx as nx
 
-
-# motifs = {
-#     "S1": nx.DiGraph([(1, 2), (2, 3)]),
-#     "S2": nx.DiGraph([(1, 2), (1, 3), (2, 3)]),
-#     "S3": nx.DiGraph([(1, 2), (2, 3), (3, 1)]),
-#     "S4": nx.DiGraph([(1, 2), (3, 2)]),
-#     "S5": nx.DiGraph([(1, 2), (1, 3)]),
-#     "D1": nx.DiGraph([(1, 2), (3, 2),(1, 3),(3, 1)]),
-#     "D2": nx.DiGraph([(1, 3), (2, 3),(2, 1),(3,1)]),
-#     "D3": nx.DiGraph([(1, 2), (2, 3), (2, 1)]),
-#     "D4": nx.DiGraph([(1, 2), (3, 2), (2, 1)]),
-#     "D5": nx.DiGraph([(1, 2), (2, 3),(3, 1),(1, 3)]),
-#     "D6": nx.DiGraph([(1, 2), (2, 1),(2, 3), (3, 2),(3, 1),(1, 3)]),
-#     "D7": nx.DiGraph([(1, 3), (2, 3),(3, 2),(3, 1),(2, 1)]), 
-#     "D8": nx.DiGraph([(1, 2), (2, 1), (2, 3), (3, 2)]),   
-# }
-
 motifs = {
     "S1": nx.DiGraph([(2, 1), (3, 2)]),
     "S2": nx.DiGraph([(1, 2), (1, 3), (2, 3)]),
