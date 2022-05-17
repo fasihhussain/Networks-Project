@@ -244,7 +244,7 @@ class Simulation:
             B_t_common[1].legend(loc="upper right")
 
             # For B_consumed plots
-            individual_plots["B_t"][0].suptitle("Composition of Diet")
+            individual_plots["B_consumed"][0].suptitle("Composition of Diet")
             for ax in individual_plots["B_consumed"][1][-1]:
                 ax.set(xlabel="Iteration (years)")
             for ax in individual_plots["B_consumed"][1][:, 0]:
